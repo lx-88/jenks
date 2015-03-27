@@ -123,7 +123,7 @@ def getQualityMetrics( data, breaks, n_classes ):
 
     if n_classes > len(data):
         return
-    data = np.array(data, dtype=DTYPE)
+    data = np.array(data, dtype=np.float32)
     data.sort()
     data = list(data)
 
@@ -168,10 +168,10 @@ def classifyData(data, breaks, class_deviations, n_classes):
 
     if n_classes > len(data):
         return
+
+    data = np.array(data, dtype=np.float32)
     data_copy = sorted(list(data))
-    data = np.array(data, dtype=DTYPE)
-
-
+    
     classCol = np.zeros((data.shape[0],1), dtype=np.dtype('a100'))
     qualityCols = np.zeros((data.shape[0],1), dtype=np.float32)
 

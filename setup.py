@@ -19,13 +19,13 @@ except ImportError:
 
 setup(
     name="jenks",
-    version="1.0",
-    author="Matthew Perry",
+    version="1.1",
+    author="GeomaticsResearch (modified from Matthew Perry's code)",
     author_email="perrygeo@gmail.com",
     description=("Cython implementation of jenks natural breaks algorithm"),
     license="BSD",
     keywords="gis geospatial geographic statistics numpy cython choropleth",
-    url="https://github.com/perrygeo/jenks",
+    url="https://github.com/lx-88/jenks",
     install_requires=['Numpy'],
     cmdclass={'build_ext': build_ext},
     ext_modules = [

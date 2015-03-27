@@ -160,23 +160,25 @@ def classifyData(data, breaks, class_deviations, n_classes):
     The purpose of this function is to assign classes/groups based on the Jenks breaks to the unsorted data.
     Also report SDCM for each assignment attached to the data.
     """
+    print "input:"
+    print data
+    print breaks
+    print class_deviations
+    print n_classes
 
     if n_classes > len(data):
         return
-    data_copy = sorted(data)
+    data_copy = sorted(list(data))
     data = np.array(data, dtype=DTYPE)
 
 
     classCol = np.zeros((data.shape[0],1), dtype=np.dtype('a100'))
     qualityCols = np.zeros((data.shape[0],1), dtype=np.float32)
 
-
-
     for i in range(0, n_classes):
         className = "class-{0}".format(str(i+1))
         classStart = breaks[i]
         classEnd = breaks[i+1]
-
         SDCM = class_deviations[i]
 
         if i == 0:
@@ -184,7 +186,5 @@ def classifyData(data, breaks, class_deviations, n_classes):
             classCol[(classStart == data)] = className
         qualityCols[((classStart < data) & (data <= classEnd))] = SDCM
         classCol[((classStart < data) & (data <= classEnd))] = className
-
-    #outData = np.append(classCol, qualityCols, 1)
-    print classCol, qualityCols
+    return classCol, qualityCols
 

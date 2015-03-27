@@ -92,7 +92,7 @@ def jenks(data, n_classes):
     data = np.array(data, dtype=DTYPE)
     data.sort()
 
-    lower_class_limits, _ = jenks_matrices(data, n_classes)
+    lower_class_limits, variance_combinations = jenks_matrices(data, n_classes)
 
     k = data.shape[0] - 1
     kclass = [0.] * (n_classes+1)
@@ -108,4 +108,83 @@ def jenks(data, n_classes):
         countNum -= 1
 
     return kclass
+
+
+
+def getQualityMetrics( data, breaks, n_classes ):
+    """
+    The Goodness of Variance Fit (GVF) is found by taking the
+    difference between the squared deviations
+    from the array mean (SDAM) and the squared deviations from the
+    class means (SDCM), and dividing by the SDAM
+
+    adapted from https://gist.github.com/drewda/1299198
+    """
+
+    if n_classes > len(data):
+        return
+    data = np.array(data, dtype=DTYPE)
+    data.sort()
+    data = list(data)
+
+    listMean = sum(data)/len(data)
+
+    SDAM = 0.0
+    for i in range(0,len(data)):
+        sqDev = (data[i] - listMean)**2
+        SDAM += sqDev
+
+    SDCM = 0.0
+    SDCM_list = list()
+    for i in range(0,n_classes):
+        if breaks[i] == 0:
+            classStart = 0
+        else:
+            classStart = data.index(breaks[i])
+            classStart += 1
+        classEnd = data.index(breaks[i+1])
+        classList = data[classStart:classEnd+1]
+        classMean = sum(classList)/len(classList)
+        preSDCM = 0.0
+        for j in range(0,len(classList)):
+            sqDev2 = (classList[j] - classMean)**2
+            preSDCM += sqDev2
+        SDCM_list.append(preSDCM)
+        SDCM += preSDCM
+    return ((SDAM - SDCM)/SDAM, SDCM_list)
+
+
+def classifyData(data, breaks, class_deviations, n_classes):
+    """
+    Modified version of function getQualityMetrics which is derived from https://gist.github.com/drewda/1299198
+    The purpose of this function is to assign classes/groups based on the Jenks breaks to the unsorted data.
+    Also report SDCM for each assignment attached to the data.
+    """
+
+    if n_classes > len(data):
+        return
+    data_copy = sorted(data)
+    data = np.array(data, dtype=DTYPE)
+
+
+    classCol = np.zeros((data.shape[0],1), dtype=np.dtype('a100'))
+    qualityCols = np.zeros((data.shape[0],1), dtype=np.float32)
+
+
+
+    for i in range(0, n_classes):
+        className = "class-{0}".format(str(i+1))
+        classStart = breaks[i]
+        classEnd = breaks[i+1]
+
+        SDCM = class_deviations[i]
+
+        if i == 0:
+            qualityCols[(classStart == data)] = SDCM
+            classCol[(classStart == data)] = className
+        qualityCols[((classStart < data) & (data <= classEnd))] = SDCM
+        classCol[((classStart < data) & (data <= classEnd))] = className
+
+    #outData = np.append(classCol, qualityCols, 1)
+    print classCol, qualityCols
 

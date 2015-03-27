@@ -1,5 +1,12 @@
 ## Fast python library for jenks natural breaks
 
+### This is forked from PerryGeo's implementation. See https://github.com/perrygeo/jenks
+I  (lx-88) have added  the ability to see GCF for the jerks solution and SDCM for each class/group within the solution. See https://gist.github.com/drewda/1299198 for more information on those...
+
+
+
+## PerryGeo's documentation
+
 The history and intent of the Jenks natural breaks algorithm is well covered by
 
 * http://www.macwright.org/2013/02/18/literate-jenks.html

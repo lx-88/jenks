@@ -1,3 +1,4 @@
+from __future__ import division
 import numpy as np
 cimport numpy as np
 cimport cython
@@ -144,7 +145,12 @@ def getQualityMetrics( data, breaks, n_classes ):
             classStart += 1
         classEnd = data.index(breaks[i+1])
         classList = data[classStart:classEnd+1]
-        classMean = sum(classList)/len(classList)
+
+        try:
+            classMean = sum(classList)/len(classList)
+        except ZeroDivisionError:
+            classMean = 1.0
+
         preSDCM = 0.0
         for j in range(0,len(classList)):
             sqDev2 = (classList[j] - classMean)**2
@@ -171,7 +177,7 @@ def classifyData(data, breaks, class_deviations, n_classes):
 
     data = np.array(data, dtype=np.float32)
     data_copy = sorted(list(data))
-    
+
     classCol = np.zeros((data.shape[0],1), dtype=np.dtype('a100'))
     qualityCols = np.zeros((data.shape[0],1), dtype=np.float32)
 

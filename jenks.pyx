@@ -166,12 +166,6 @@ def classifyData(data, breaks, class_deviations, n_classes):
     The purpose of this function is to assign classes/groups based on the Jenks breaks to the unsorted data.
     Also report SDCM for each assignment attached to the data.
     """
-    print "input:"
-    print data
-    print breaks
-    print class_deviations
-    print n_classes
-
     if n_classes > len(data):
         return
 
